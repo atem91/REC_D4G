@@ -6,6 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
   <link rel="stylesheet" href="{{ url_for('static',filename='template_IRN.css') }}">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.min.js"></script>
+
   <title>REC IRN</title>
   <script>
     function search() {
@@ -40,6 +42,18 @@
               xmlHttp.send(null);
               document.getElementById("Commune").innerHTML = xmlHttp.responseText;
     }
+
+    function download_pdf(){
+        var doc = new jsPDF();
+        var elementHTML = $('#result').html();
+        doc.fromHTML(elementHTML,15, 15,{"width":170});
+        doc.save('result.pdf');
+    }
+
+    function dl_csv(){
+        saveAs("{{ url_for('static',filename='Tableau_utf8.csv') }}");
+    }
+
   </script>
 
 </head>
@@ -48,6 +62,8 @@
     <img src="{{ url_for('static',filename='REC.jpg') }}" width="70" height="50" alt="Site logo">
   <a class="navbar-brand" href="https://indice.institutnr.org"> IRN </a>
   <a class="navbar-brand" href="https://indice.institutnr.org"> Accueil </a>
+    <button type="button" class="btn btn-light btn-sm ml-auto"><a download="données_globales.csv" href="{{ url_for('static',filename='Tableau_utf8.csv') }}" style="color: black">Télécharger les données </a></button>
+
 </nav>
 
 
@@ -81,7 +97,7 @@ Plus cette indice sera élevé plus cela voudra dire que votre ville peut et se 
 
 
   <select name="Région" id="Région" class="form-control"  onChange="filter_région()">
-    <option value="" selected>Intercommunalité</option>
+    <option value="" selected>Région</option>
     {% for region in regions %}
     <option value="{{region.region_code}}">{{region.region_name}}</option>
     {% endfor %}
@@ -143,7 +159,7 @@ Plus cette indice sera élevé plus cela voudra dire que votre ville peut et se 
   <div class="card" style="height: 200px">
    <div class="card-body">
       <h5 class="card-title">Compétence administrative </h5>
-      <p class="card-text">Etre jeune, être en situation de précarité (bénéficiant des minimas sociaux , etre chaumeur</p>
+      <p class="card-text">Etre jeune, être en situation de précarité (bénéficiant des minimas sociaux , etre chômeur</p>
    </div>
   </div>
 </div>
@@ -160,6 +176,8 @@ Plus cette indice sera élevé plus cela voudra dire que votre ville peut et se 
 </div>
   </div>
   </div>
+
+
 <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
