@@ -82,7 +82,9 @@ Plus cette indice sera élevé plus cela voudra dire que votre ville peut et se 
 
   <select name="Région" id="Région" class="form-control"  onChange="filter_région()">
     <option value="" selected>Intercommunalité</option>
-    <option value="Occitanie">Occitanie</option>
+    {% for region in regions %}
+    <option value="{{region.region_code}}">{{region.region_name}}</option>
+    {% endfor %}
   </select>
   </div>
 </div>
@@ -116,6 +118,8 @@ Plus cette indice sera élevé plus cela voudra dire que votre ville peut et se 
 
 
 </div>
+
+    {% include 'top.html' %}
 <div class="row jumbotron m-0 ">
 
   <div class="col">

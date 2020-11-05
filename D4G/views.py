@@ -99,22 +99,36 @@ def index():
     #init_db()
     res = ""
     citys = []
+
+    regions = region.query.all()
     for zone in db.session.query(Indice.CityName.distinct().label("CityName")).order_by(Indice.CityName):
         citys.append(zone.CityName)
-    return render_template('template_IRN.html', citys=citys, len=len(citys), url_for=url_for)
+    return render_template('template_IRN.html', citys=citys, len=len(citys), url_for=url_for,regions=regions)
 
 
 @app.route('/search')
 def search():
     city = request.args.get('city')
-    zone = Indice.query.filter(Indice.CityName.like('%'+city + '%')).first()
-    return render_template('result.html', name=zone.CityName, AccessInfo=zone.AccessInfo, AdminCompetences=zone.AdminCompetences,
-                           NumCompetences=zone.NumCompetences, AccessInterface=zone.AccessInterface)
+    zone = Indice.query.filter(Indice.CityName==city).all()
+    return render_template('result.html', results=zone)
 
 @app.route('/searchcp')
 def searchcp():
     cp = str(request.args.get('code'))
-    city = db.session.query(ville).filter(ville.zip_code == cp).first().CityName
-    zone = Indice.query.filter(Indice.CityName.like('%'+city + '%')).first()
-    return render_template('result.html', name=zone.CityName, AccessInfo=zone.AccessInfo, AdminCompetences=zone.AdminCompetences,
-                           NumCompetences=zone.NumCompetences, AccessInterface=zone.AccessInterface)
+    zone = db.session.query(Indice).join(ville, ville.CityName==Indice.CityName).filter(ville.zip_code == cp).all()
+    #city = db.session.query(ville).filter(ville.zip_code == cp)
+    #zone = Indice.query.filter(Indice.CityName==city).all()
+    print(len(zone))
+    return render_template('result.html', results=zone)
+
+@app.route('/filter_department')
+def filter_department():
+    code = str(request.args.get('code'))
+    departments = department.query.filter(department.region_code == code).all()
+    return render_template('filter_departments.html', departments=departments)
+
+@app.route('/filter_cities')
+def filter_cities():
+    code = str(request.args.get('code'))
+    cities = ville.query.filter(ville.department_code == code).all()
+    return render_template('filter_cities.html', cities=cities)
