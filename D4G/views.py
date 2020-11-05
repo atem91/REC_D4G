@@ -4,7 +4,7 @@ import pandas as pd
 
 app = Flask(__name__)
 
-app.config.from_object('D4G.config')
+app.config.from_object('config')
 db = SQLAlchemy(app)
 
 
@@ -86,11 +86,11 @@ class history(db.Model):
 def init_db():
     db.drop_all()
     db.create_all()
-    given_data_institut = pd.read_csv('D4G/Tableau_utf8.csv', error_bad_lines=False, delimiter=';').fillna(method='pad')
-    new_table = pd.read_csv('D4G/departement_region.csv', error_bad_lines=False, delimiter=';', usecols=[1, 2, 3, 4, 5, 8], dtype={'COM' : str, 'DEP' : str})
-    departments = pd.read_csv('D4G/departments.csv', error_bad_lines=False, delimiter=',', usecols=[1,2,3], dtype={'region_code' : str, 'code': str, 'name': str})
-    regions = pd.read_csv('D4G/regions.csv', error_bad_lines=False, delimiter=',', usecols=[1,2], dtype={'code' : str, 'name': str})
-    cities = pd.read_csv('D4G/cities.csv', error_bad_lines=False, delimiter=',', usecols=[1,2,3,4], dtype={'department_code':str, 'insee_code': str, 'zip_code':str, 'name' :str})
+    given_data_institut = pd.read_csv('Tableau_utf8.csv', error_bad_lines=False, delimiter=';').fillna(method='pad')
+    new_table = pd.read_csv('departement_region.csv', error_bad_lines=False, delimiter=';', usecols=[1, 2, 3, 4, 5, 8], dtype={'COM' : str, 'DEP' : str})
+    departments = pd.read_csv('departments.csv', error_bad_lines=False, delimiter=',', usecols=[1,2,3], dtype={'region_code' : str, 'code': str, 'name': str})
+    regions = pd.read_csv('regions.csv', error_bad_lines=False, delimiter=',', usecols=[1,2], dtype={'code' : str, 'name': str})
+    cities = pd.read_csv('cities.csv', error_bad_lines=False, delimiter=',', usecols=[1,2,3,4], dtype={'department_code':str, 'insee_code': str, 'zip_code':str, 'name' :str})
     #for index, line in new_table.iterrows():
     #    db.session.add(Zone(line['LIBCOM'], line['LIBIRIS'], line['DEP'], line['REG'], line['COM']))
     nom_ville = ""
@@ -108,7 +108,6 @@ def init_db():
 
 @app.route('/')
 def index():
-    #init_db()
     res = ""
     citys = []
 
@@ -146,3 +145,7 @@ def filter_cities():
     code = str(request.args.get('code'))
     cities = ville.query.filter(ville.department_code == code).all()
     return render_template('filter_cities.html', cities=cities)
+
+if __name__ == '__main__':
+    init_db()
+    app.run()
