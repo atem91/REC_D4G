@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 
 <head>
   <meta charset="UTF-8">
@@ -16,12 +16,36 @@
       document.getElementById("result").innerHTML = xmlHttp.responseText;
 
     }
+
+    function search_postal(){
+        var codepostal =document.getElementById("postal").value;
+              var xmlHttp = new XMLHttpRequest();
+              xmlHttp.open("GET", "/searchcp?code=" + codepostal, false);
+              xmlHttp.send(null);
+              document.getElementById("result").innerHTML = xmlHttp.responseText
+    }
+
+    function filter_région(){
+        var region =document.getElementById("Région").value;
+              var xmlHttp = new XMLHttpRequest();
+              xmlHttp.open("GET", "/search?code=" + region, false);
+              xmlHttp.send(null);
+              document.getElementById("Departement").innerHTML = xmlHttp.responseText
+    }
+
+    function filter_dept(){
+        var dept =document.getElementById("Departement").value;
+              var xmlHttp = new XMLHttpRequest();
+              xmlHttp.open("GET", "/search?code=" + dept, false);
+              xmlHttp.send(null);
+              document.getElementById("Commune").innerHTML = xmlHttp.responseText
+    }
   </script>
 
 </head>
 <body>
 <nav class="navbar navbar-expand bg-dark navbar-dark">
-  <img src="logo.jpeg" width="70" height="50" alt="Site logo">
+    <img src="{{ url_for('static',filename='REC.jpg') }}" width="70" height="50" alt="Site logo">
   <a class="navbar-brand" href="https://indice.institutnr.org"> IRN </a>
   <a class="navbar-brand" href="https://indice.institutnr.org"> Accueil </a>
 </nav>
@@ -36,11 +60,21 @@
 
 <form action="" method="post" >
   <div class="jumbotron row">
+
+<div class="col">
+  <div class="card">
+        <input type="number" id="postal" name="postal" onclick="search_postal()"/>
+      <input type="button" id="butt" onclick="search_postal()" value="Recherche par code Postal"/>
+  </div>
+</div>
+
+
+
 <div class="col">
   <div class="card">
   <label for="Région">Région:</label>
 
-  <select name="Région" id="Région" required>
+  <select name="Région" id="Région" required onselect="filter_région()">
     <option value="" selected>Intercommunalité</option>
     <option value="Occitanie">Occitanie</option>
   </select>
@@ -50,22 +84,13 @@
   <div class="card">
   <label for="Departement">Département:</label>
 
-  <select name="Departement" id="Departement" required>
+  <select name="Departement" id="Departement" required onselect="filter_dept()">
     <option value="" selected>Département</option>
     <option value="Lot">Lot</option>
   </select>
   </div>
 </div>
-<div class="col">
-  <div class="card">
-  <label for="Intercommunalité">Intercommunalité:</label>
 
-  <select name="Intercommunalité" id="Intercommunalité" required>
-    <option value="" selected>Intercommunalité</option>
-    <option value="C&A">C&A</option>
-  </select>
-  </div>
-</div>
 <div class="col">
   <div class="card">
   <label for="Commune">Commune:</label>
