@@ -120,16 +120,16 @@ def index():
 @app.route('/search')
 def search():
     city = request.args.get('city')
-    db.session.add(history('name', city))
-    db.session.commit()
+#    db.session.add(history('name', city))
+#    db.session.commit()
     zone = Indice.query.filter(Indice.CityName==city).order_by(Indice.CityName, Indice.ZoneIris).all()
     return render_template('result.html', results=zone)
 
 @app.route('/searchcp')
 def searchcp():
     cp = str(request.args.get('code'))
-    db.session.add(history('code', cp))
-    db.session.commit()
+#    db.session.add(history('code', cp))
+#    db.session.commit()
     zone = db.session.query(Indice).join(ville, ville.CityName==Indice.CityName).filter(ville.zip_code == cp).order_by(Indice.CityName, Indice.ZoneIris).all()
     print(len(zone))
     return render_template('result.html', results=zone)
