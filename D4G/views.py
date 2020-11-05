@@ -11,13 +11,15 @@ db = SQLAlchemy(app)
 class Indice(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     CityName = db.Column(db.String(300), nullable=True)
+    ZoneIris = db.Column(db.String(300), nullable=True)
     AccessInfo = db.Column(db.Integer(), nullable=False)
     AccessInterface = db.Column(db.Integer(), nullable=False)
     AdminCompetences = db.Column(db.Integer(), nullable=False)
     GlobalScore = db.Column(db.Integer(), nullable=False)
     NumCompetences = db.Column(db.Integer(), nullable=False)
-    def __init__(self, CityName, AccessInfo, AccessInterface, AdminCompetences, GlobalScore, NumCompetences):
+    def __init__(self, CityName, ZoneIris, AccessInfo, AccessInterface, AdminCompetences, GlobalScore, NumCompetences):
         self.CityName = CityName
+        self.ZoneIris = ZoneIris
         self.AccessInfo = AccessInfo
         self.AccessInterface = AccessInterface
         self.AdminCompetences = AdminCompetences
@@ -72,18 +74,28 @@ class region(db.Model):
         self.region_name = region_name
         self.region_code = region_code
 
+class history(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    type = db.Column(db.String(10), nullable=False)
+    param = db.Column(db.String(300), nullable=False)
+
+    def __init__(self, type, param):
+        self.type = type
+        self.param = param
+
 def init_db():
     db.drop_all()
     db.create_all()
-    given_data_institut = pd.read_csv('D4G/Tableau_utf8.csv', error_bad_lines=False, delimiter=';')
-    new_table = pd.read_csv('D4G/departement_region.csv', error_bad_lines=False, delimiter=';', usecols=[1, 2, 4, 5, 8], dtype={'COM' : str, 'DEP' : str})
+    given_data_institut = pd.read_csv('D4G/Tableau_utf8.csv', error_bad_lines=False, delimiter=';').fillna(method='pad')
+    new_table = pd.read_csv('D4G/departement_region.csv', error_bad_lines=False, delimiter=';', usecols=[1, 2, 3, 4, 5, 8], dtype={'COM' : str, 'DEP' : str})
     departments = pd.read_csv('D4G/departments.csv', error_bad_lines=False, delimiter=',', usecols=[1,2,3], dtype={'region_code' : str, 'code': str, 'name': str})
     regions = pd.read_csv('D4G/regions.csv', error_bad_lines=False, delimiter=',', usecols=[1,2], dtype={'code' : str, 'name': str})
     cities = pd.read_csv('D4G/cities.csv', error_bad_lines=False, delimiter=',', usecols=[1,2,3,4], dtype={'department_code':str, 'insee_code': str, 'zip_code':str, 'name' :str})
     #for index, line in new_table.iterrows():
     #    db.session.add(Zone(line['LIBCOM'], line['LIBIRIS'], line['DEP'], line['REG'], line['COM']))
+    nom_ville = ""
     for index, line in given_data_institut.iterrows():
-        db.session.add(Indice(line['Nom Com'], line["ACCES A L'INFORMATION"], line["ACCÈS AUX INTERFACES NUMERIQUES"], line["COMPETENCES ADMINISTATIVES"], line["SCORE GLOBAL "], line["COMPÉTENCES NUMÉRIQUES / SCOLAIRES"]))
+        db.session.add(Indice(line['Nom Com'], line['Nom Iris'], line["ACCES A L'INFORMATION"], line["ACCÈS AUX INTERFACES NUMERIQUES"], line["COMPETENCES ADMINISTATIVES"], line["SCORE GLOBAL "], line["COMPÉTENCES NUMÉRIQUES / SCOLAIRES"]))
     for _, line in cities.iterrows():
         db.session.add(ville(line['name'], line['department_code'], line['zip_code']))
     for _, line in departments.iterrows():
@@ -109,15 +121,17 @@ def index():
 @app.route('/search')
 def search():
     city = request.args.get('city')
-    zone = Indice.query.filter(Indice.CityName==city).all()
+    db.session.add(history('name', city))
+    db.session.commit()
+    zone = Indice.query.filter(Indice.CityName==city).order_by(Indice.CityName, Indice.ZoneIris).all()
     return render_template('result.html', results=zone)
 
 @app.route('/searchcp')
 def searchcp():
     cp = str(request.args.get('code'))
-    zone = db.session.query(Indice).join(ville, ville.CityName==Indice.CityName).filter(ville.zip_code == cp).all()
-    #city = db.session.query(ville).filter(ville.zip_code == cp)
-    #zone = Indice.query.filter(Indice.CityName==city).all()
+    db.session.add(history('code', cp))
+    db.session.commit()
+    zone = db.session.query(Indice).join(ville, ville.CityName==Indice.CityName).filter(ville.zip_code == cp).order_by(Indice.CityName, Indice.ZoneIris).all()
     print(len(zone))
     return render_template('result.html', results=zone)
 
