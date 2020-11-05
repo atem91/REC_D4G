@@ -96,7 +96,7 @@ def init_db():
 
 @app.route('/')
 def index():
-    #init_db()
+    init_db()
     res = ""
     citys = []
     for zone in db.session.query(Indice.CityName.distinct().label("CityName")).order_by(Indice.CityName):

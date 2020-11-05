@@ -16,4 +16,7 @@ h1
 {
   text-align: left;
 }
-
+.jumbotron{
+  margin-top: 25%;
+  margin-bottom: 25%;
+}
