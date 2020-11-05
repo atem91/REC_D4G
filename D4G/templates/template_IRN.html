@@ -22,23 +22,23 @@
               var xmlHttp = new XMLHttpRequest();
               xmlHttp.open("GET", "/searchcp?code=" + codepostal, false);
               xmlHttp.send(null);
-              document.getElementById("result").innerHTML = xmlHttp.responseText
+              document.getElementById("result").innerHTML = xmlHttp.responseText;
     }
 
     function filter_région(){
         var region =document.getElementById("Région").value;
               var xmlHttp = new XMLHttpRequest();
-              xmlHttp.open("GET", "/search?code=" + region, false);
+              xmlHttp.open("GET", "/filter_department?code=" + region, false);
               xmlHttp.send(null);
-              document.getElementById("Departement").innerHTML = xmlHttp.responseText
+              document.getElementById("Departement").innerHTML = xmlHttp.responseText;
     }
 
     function filter_dept(){
         var dept =document.getElementById("Departement").value;
               var xmlHttp = new XMLHttpRequest();
-              xmlHttp.open("GET", "/search?code=" + dept, false);
+              xmlHttp.open("GET", "/filter_cities?code=" + dept, false);
               xmlHttp.send(null);
-              document.getElementById("Commune").innerHTML = xmlHttp.responseText
+              document.getElementById("Commune").innerHTML = xmlHttp.responseText;
     }
   </script>
 
@@ -54,10 +54,16 @@
 
 
 
-
 <div class="jumbotron m-0">
 <div class="container-fluid">
+<blockquote class="blockquote text center">
+    <p class="lead center"> L’indice de fragilité numérique dépends des plusieurs facteurs et permet de qualifier quantitativement la facilité d’accès aux ressources en ligne pour votre département, région, ville. En effet il prend en compte l’accès à l’information, l’accès aux interfaces, la capacité d’usage numérique, et la compétence administrative.
+Plus cette indice sera élevé plus cela voudra dire que votre ville peut et se sert des ressources en lignes. Si a contrario, cet indice est faible, cela signifie que vous n’avez pas la capacité ou les moyens de vous connecter.
+</p>
 
+  <footer class="blockquote-footer"> Attention, cet indice est calculé sur des statistiques. Cela ne veut en rien dire que vous êtes où n’êtes pas capable ou dans la mesure de vous servir des ressources si votre indice est faible.
+  </footer>
+</blockquote>
 <form action="" method="post" >
   <div class="jumbotron row m-0">
 
@@ -72,9 +78,9 @@
 
 <div class="col m-0">
   <div class="card">
-  <label for="Région">Région:</label>
+  <!--<label for="Région">Région:</label>-->
 
-  <select name="Région" id="Région" required onselect="filter_région()">
+  <select name="Région" id="Région" class="form-control"  onChange="filter_région()">
     <option value="" selected>Intercommunalité</option>
     <option value="Occitanie">Occitanie</option>
   </select>
@@ -82,9 +88,9 @@
 </div>
 <div class="col m-0">
   <div class="card">
-  <label for="Departement">Département:</label>
+  <!--<label for="Departement">Département:</label>-->
 
-  <select name="Departement" id="Departement" required onselect="filter_dept()">
+  <select name="Departement" id="Departement" class="form-control"  onChange="filter_dept()">
     <option value="" selected>Département</option>
     <option value="Lot">Lot</option>
   </select>
@@ -93,9 +99,9 @@
 
 <div class="col m-0">
   <div class="card">
-  <label for="Commune">Commune:</label>
+  <!-- <label for="Commune">Commune:</label>-->
 
-  <select name="Commune" id="Commune" required >
+  <select name="Commune" id="Commune" class="form-control" required >
     <option value="" selected>Commune</option>
     {% for i in range(100) %}
       <option value="{{citys[i]}}">{{citys[i]}}</option>
@@ -103,7 +109,7 @@
   </select>
   </div>
 </div>
-  <input type="button" value="Envoyer" onclick="search()">
+      <button type="button" class="btn btn-dark btn-sm" onclick="search()">Envoyer</button>
 </div>
   </form>
 <div class="jumbotron m-0" id="result">
