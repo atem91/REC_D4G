@@ -78,7 +78,7 @@ Plus cette indice sera élevé plus cela voudra dire que votre ville peut et se 
 
 <div class="col m-0">
   <div class="card">
-  <!--<label for="Région">Région:</label>-->
+
 
   <select name="Région" id="Région" class="form-control"  onChange="filter_région()">
     <option value="" selected>Intercommunalité</option>
@@ -90,7 +90,7 @@ Plus cette indice sera élevé plus cela voudra dire que votre ville peut et se 
 </div>
 <div class="col m-0">
   <div class="card">
-  <!--<label for="Departement">Département:</label>-->
+
 
   <select name="Departement" id="Departement" class="form-control"  onChange="filter_dept()">
     <option value="" selected>Département</option>
@@ -101,8 +101,6 @@ Plus cette indice sera élevé plus cela voudra dire que votre ville peut et se 
 
 <div class="col m-0">
   <div class="card">
-  <!-- <label for="Commune">Commune:</label>-->
-
   <select name="Commune" id="Commune" class="form-control" required >
     <option value="" selected>Commune</option>
     {% for i in range(100) %}
